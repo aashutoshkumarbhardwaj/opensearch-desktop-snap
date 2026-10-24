@@ -1,0 +1,48 @@
+name: opensearch-desktop
+base: core22
+version: '0.1.0'
+summary: OpenSearch Dashboards Desktop
+description: |
+  OpenSearch Dashboards Desktop provides a desktop client for OpenSearch
+  with unified cluster administration, GUI + TUI experience, and local-first storage.
+
+grade: stable
+confinement: strict
+
+architectures:
+  - build-on: amd64
+
+apps:
+  opensearch-desktop:
+    command: opt/OpenSearch\ Dashboards\ Desktop/dashboards-desktop --no-sandbox
+    desktop: usr/share/applications/dashboards-desktop.desktop
+    extensions: [gnome]
+    plugs:
+      - network
+      - network-bind
+      - home
+      - opengl
+      - unity7
+      - x11
+      - wayland
+      - desktop
+      - desktop-legacy
+      - password-manager-service
+
+parts:
+  opensearch-desktop:
+    plugin: dump
+    source: https://github.com/opensearch-project/dashboards-desktop/releases/download/v0.1.1/dashboards-desktop_0.1.0_amd64.deb
+    source-type: deb
+    stage-packages:
+      - libnss3
+      - libnspr4
+      - libsecret-1-0
+      - libnotify4
+      - libxtst6
+      - libxss1
+      - libatspi2.0-0
+    override-build: |
+      craftctl default
+      sed -i 's|Icon=dashboards-desktop|Icon=${SNAP}/usr/share/icons/hicolor/256x256/apps/dashboards-desktop.png|g' $CRAFT_PART_INSTALL/usr/share/applications/dashboards-desktop.desktop
+      sed -i 's|Exec=.*|Exec=opensearch-desktop %U|g' $CRAFT_PART_INSTALL/usr/share/applications/dashboards-desktop.desktop
