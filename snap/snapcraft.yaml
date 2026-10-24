@@ -14,7 +14,7 @@ architectures:
 
 apps:
   opensearch-desktop:
-    command: opt/OpenSearch\ Dashboards\ Desktop/dashboards-desktop --no-sandbox
+    command: bin/opensearch-desktop-launcher
     desktop: usr/share/applications/dashboards-desktop.desktop
     extensions: [gnome]
     plugs:
@@ -30,6 +30,12 @@ apps:
       - password-manager-service
 
 parts:
+  launcher:
+    plugin: dump
+    source: snap/local
+    organize:
+      launcher.sh: bin/opensearch-desktop-launcher
+
   opensearch-desktop:
     plugin: dump
     source: https://github.com/opensearch-project/dashboards-desktop/releases/download/v0.1.1/dashboards-desktop_0.1.0_amd64.deb
